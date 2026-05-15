@@ -43,20 +43,26 @@ app.get('/', (req, res) => {
     res.render('home', {
         title: 'Home'
     });
+    
 });
 
 // Organizations Route
 app.get('/organizations', async (req, res) => {
-    console.log('ORGANIZATIONS ROUTE');
+    try {
+        console.log('ORGANIZATIONS ROUTE');
 
-    const organizations = await getAllOrganizations();
+        const organizations = await getAllOrganizations();
 
-    console.log(organizations);
+        res.render('organizations', {
+            title: 'Our Partner Organizations',
+            organizations
+        });
 
-    res.render('organizations', {
-        title: 'Our Partner Organizations',
-        organizations
-    });
+    } catch (error) {
+        console.error(error);
+
+        res.status(500).send('Server Error');
+    }
 });
 
 // Projects Route
