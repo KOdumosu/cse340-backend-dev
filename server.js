@@ -10,6 +10,8 @@ import path from 'path';
 
 import { getAllOrganizations } from './src/models/organizations.js';
 
+import { getAllCategories } from './src/models/categories.js';
+
 // Environment variables
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
 const PORT = process.env.PORT || 3000;
@@ -75,12 +77,25 @@ app.get('/projects', (req, res) => {
 });
 
 // Categories Route
-app.get('/categories', (req, res) => {
-    console.log('CATEGORIES ROUTE');
+app.get('/categories', async (req, res) => {
 
-    res.render('categories', {
-        title: 'Project Categories'
-    });
+    try {
+
+        console.log('CATEGORIES ROUTE');
+
+        const categories = await getAllCategories();
+
+        res.render('categories', {
+            title: 'Project Categories',
+            categories
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        res.status(500).send('Server Error');
+    }
 });
 
 

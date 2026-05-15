@@ -10,6 +10,26 @@ CREATE TABLE organization (
     logo_filename VARCHAR(255) NOT NULL
 );
 
+CREATE TABLE categories (
+    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE project_categories (
+    project_id INT NOT NULL,
+    category_id INT NOT NULL,
+
+    PRIMARY KEY (project_id, category_id),
+
+    FOREIGN KEY (project_id)
+        REFERENCES projects(project_id)
+        ON DELETE CASCADE,
+
+    FOREIGN KEY (category_id)
+        REFERENCES categories(category_id)
+        ON DELETE CASCADE
+);
+
 -- ========================================
 -- Insert sample data: Organizations
 -- ========================================
@@ -39,3 +59,18 @@ VALUES
     'hello@unityserve.org',
     'unityserve-logo.png'
 );
+
+INSERT INTO categories (category_name)
+VALUES
+('Environmental'),
+('Educational'),
+('Community Service'),
+('Health and Wellness');
+
+INSERT INTO project_categories (project_id, category_id)
+VALUES
+(1, 1),
+(1, 3),
+(2, 2),
+(3, 4);
+
