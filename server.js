@@ -1,6 +1,14 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
+
+import { testConnection } from './src/models/db.js';
+
 import { fileURLToPath } from 'url';
 import path from 'path';
+
+import { getAllOrganizations } from './src/models/organizations.js';
 
 // Environment variables
 const NODE_ENV = process.env.NODE_ENV?.toLowerCase() || 'production';
@@ -13,9 +21,7 @@ const __dirname = path.dirname(__filename);
 // Initialize express
 const app = express();
 
-/**
- * Middleware
- */
+/*** Middleware*/
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -28,8 +34,9 @@ app.set('views', path.join(__dirname, 'src/views'));
 
 console.log(path.join(__dirname, 'src/views'));
 
-/*** Routes*/
+/*** Routes */
 
+// Home Route
 app.get('/', (req, res) => {
     console.log('HOME ROUTE');
 
@@ -38,14 +45,21 @@ app.get('/', (req, res) => {
     });
 });
 
-app.get('/organizations', (req, res) => {
+// Organizations Route
+app.get('/organizations', async (req, res) => {
     console.log('ORGANIZATIONS ROUTE');
 
+    const organizations = await getAllOrganizations();
+
+    console.log(organizations);
+
     res.render('organizations', {
-        title: 'Our Partner Organizations'
+        title: 'Our Partner Organizations',
+        organizations
     });
 });
 
+// Projects Route
 app.get('/projects', (req, res) => {
     console.log('PROJECTS ROUTE');
 
@@ -54,6 +68,7 @@ app.get('/projects', (req, res) => {
     });
 });
 
+// Categories Route
 app.get('/categories', (req, res) => {
     console.log('CATEGORIES ROUTE');
 
@@ -62,8 +77,23 @@ app.get('/categories', (req, res) => {
     });
 });
 
+
 // Start server
-app.listen(PORT, () => {
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
+app.listen(PORT, async () => {
+
+  try {
+
+    await testConnection();
+
+    console.log(
+      `Server is running at http://127.0.0.1:${PORT}`
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Error connecting to database:',
+      error
+    );
+  }
 });
