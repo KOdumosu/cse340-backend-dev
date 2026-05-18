@@ -1,8 +1,6 @@
--- ========================================
--- Organization Table
--- ========================================
+-- ====================================Organizations Table========================================
 
-CREATE TABLE organization (
+CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
     description TEXT NOT NULL,
@@ -10,12 +8,26 @@ CREATE TABLE organization (
     logo_filename VARCHAR(255) NOT NULL
 );
 
+-- ========================================Projects Table========================================
+
+CREATE TABLE projects (
+    project_id SERIAL PRIMARY KEY,
+    project_name VARCHAR(150) NOT NULL,
+    project_description TEXT NOT NULL,
+    organization_id INT REFERENCES organizations(organization_id)
+);
+
+-- ================================Categories Table===============================
+
 CREATE TABLE categories (
-    category_id INT AUTO_INCREMENT PRIMARY KEY,
+    category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL
 );
 
+-- =======================Project Categories Junction Table============================
+
 CREATE TABLE project_categories (
+
     project_id INT NOT NULL,
     category_id INT NOT NULL,
 
@@ -30,11 +42,9 @@ CREATE TABLE project_categories (
         ON DELETE CASCADE
 );
 
--- ========================================
--- Insert sample data: Organizations
--- ========================================
+-- ======================Insert Organizations=====================
 
-INSERT INTO organization (
+INSERT INTO organizations (
     name,
     description,
     contact_email,
@@ -43,22 +53,48 @@ INSERT INTO organization (
 VALUES
 (
     'BrightFuture Builders',
-    'A nonprofit focused on improving community infrastructure through sustainable construction projects.',
+    'A nonprofit focused on improving community infrastructure.',
     'info@brightfuturebuilders.org',
     'brightfuture-logo.png'
 ),
 (
     'GreenHarvest Growers',
-    'An urban farming collective promoting food sustainability and education in local neighborhoods.',
+    'Urban farming and sustainability organization.',
     'contact@greenharvest.org',
     'greenharvest-logo.png'
 ),
 (
     'UnityServe Volunteers',
-    'A volunteer coordination group supporting local charities and service initiatives.',
+    'Volunteer coordination group.',
     'hello@unityserve.org',
     'unityserve-logo.png'
 );
+
+-- ==============================Insert Projects==============================
+
+INSERT INTO projects (
+    project_name,
+    project_description,
+    organization_id
+)
+VALUES
+(
+    'Park Cleanup',
+    'Cleaning and restoring public parks.',
+    1
+),
+(
+    'Community Tutoring',
+    'Tutoring students in local communities.',
+    2
+),
+(
+    'Health Awareness Campaign',
+    'Promoting community health awareness.',
+    3
+);
+
+-- ================Insert Categories=====================
 
 INSERT INTO categories (category_name)
 VALUES
@@ -67,10 +103,14 @@ VALUES
 ('Community Service'),
 ('Health and Wellness');
 
-INSERT INTO project_categories (project_id, category_id)
+-- ========================Insert Project Categories=============================
+
+INSERT INTO project_categories (
+    project_id,
+    category_id
+)
 VALUES
 (1, 1),
 (1, 3),
 (2, 2),
 (3, 4);
-
