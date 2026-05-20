@@ -1,17 +1,12 @@
 import { getAllOrganizations } from '../models/organizations.js';
 
-const showOrganizationsPage = async (req, res, next) => {
-    try {
-        const organizations = await getAllOrganizations();
+const showOrganizationsPage = async (req, res) => {
+    const organizations = await getAllOrganizations();
 
-        res.render('organizations', {
-            title: 'Our Partner Organizations',
-            organizations
-        });
-
-    } catch (error) {
-        next(error);
-    }
+    res.render('organizations', {
+        title: 'Our Partner Organizations',
+        organizations
+    });
 };
 
 export { showOrganizationsPage };

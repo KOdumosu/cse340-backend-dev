@@ -6,19 +6,16 @@ const db = require('./src/models/db');
 const router = require('./src/routes');
 
 const app = express();
-
 const PORT = process.env.PORT || 3000;
 
-/*** Middleware ***/
-
-// Static files
+// static
 app.use(express.static(path.join(__dirname, 'public')));
 
-// EJS setup
+// ejs
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
-// Middleware: log requests
+// middleware
 app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -26,25 +23,24 @@ app.use((req, res, next) => {
     next();
 });
 
-// Middleware: expose NODE_ENV to templates
 app.use((req, res, next) => {
     res.locals.NODE_ENV = process.env.NODE_ENV;
     next();
 });
 
-/*** ROUTES (MVC CORE FIX) ***/
+// ✅ MVC ROUTES HERE
 app.use(router);
 
-/*** 404 Catch-all ***/
+// 404
 app.use((req, res, next) => {
     const err = new Error('Page Not Found');
     err.status = 404;
     next(err);
 });
 
-/*** GLOBAL ERROR HANDLER ***/
+// error handler
 app.use((err, req, res, next) => {
-    console.error('Error occurred:', err.message);
+    console.error(err.message);
     console.error(err.stack);
 
     const status = err.status || 500;
@@ -57,14 +53,14 @@ app.use((err, req, res, next) => {
     });
 });
 
-/*** START SERVER ***/
+// start
 app.listen(PORT, async () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
 
     try {
         await db.query('SELECT NOW()');
         console.log('Database connected successfully');
-    } catch (error) {
-        console.error('Database connection error:', error.message);
+    } catch (err) {
+        console.error('DB connection error:', err.message);
     }
 });
