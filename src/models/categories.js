@@ -1,14 +1,16 @@
-import pool from './db.js';
+const db = require('./db');
 
-export const getAllCategories = async () => {
-
+async function getAllCategories() {
     const sql = `
         SELECT *
         FROM categories
-        ORDER BY category_name
+        ORDER BY category_id;
     `;
 
-    const [rows] = await pool.query(sql);
+    const result = await db.query(sql);
+    return result.rows;
+}
 
-    return rows;
+module.exports = {
+    getAllCategories
 };

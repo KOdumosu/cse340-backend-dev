@@ -1,84 +1,43 @@
-import { Pool } from 'pg';
+const { Pool } = require('pg');
 
 const pool = new Pool({
-    connectionString: process.env.DB_URL,
+    connectionString: process.env.DATABASE_URL,
     ssl: {
-  rejectUnauthorized: false
-}
+        rejectUnauthorized: false
+    }
 });
 
-let db = null;
+const db = {
 
-if (
-    process.env.NODE_ENV === 'development' &&
-    process.env.ENABLE_SQL_LOGGING === 'true'
-) {
+    async query(text, params) {
+        try {
+            const start = Date.now();
 
-    db = {
+            const res = await pool.query(text, params);
 
-        async query(text, params) {
+            const duration = Date.now() - start;
 
-            try {
+            console.log('Executed query:', {
+                text: text.replace(/\s+/g, ' ').trim(),
+                duration: `${duration}ms`,
+                rows: res.rowCount
+            });
 
-                const start = Date.now();
+            return res;
 
-                const res = await pool.query(text, params);
+        } catch (error) {
+            console.error('Database query error:', {
+                text: text.replace(/\s+/g, ' ').trim(),
+                error: error.message
+            });
 
-                const duration = Date.now() - start;
-
-                console.log('Executed query:', {
-                    text: text.replace(/\s+/g, ' ').trim(),
-                    duration: `${duration}ms`,
-                    rows: res.rowCount
-                });
-
-                return res;
-
-            } catch (error) {
-
-                console.error('Error in query:', {
-                    text: text.replace(/\s+/g, ' ').trim(),
-                    error: error.message
-                });
-
-                throw error;
-            }
-        },
-
-        async close() {
-            await pool.end();
+            throw error;
         }
-    };
+    },
 
-} else {
-
-    db = pool;
-}
-
-const testConnection = async () => {
-
-    try {
-
-        const result = await db.query(
-            'SELECT NOW() as current_time'
-        );
-
-        console.log(
-            'Database connection successful:',
-            result.rows[0].current_time
-        );
-
-        return true;
-
-    } catch (error) {
-
-        console.error(
-            'Database connection failed:',
-            error.message
-        );
-
-        throw error;
+    async close() {
+        await pool.end();
     }
 };
 
-export { db as default, testConnection };
+module.exports = db;

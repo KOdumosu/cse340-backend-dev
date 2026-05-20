@@ -1,20 +1,16 @@
-import db from './db.js'
+const db = require('./db');
 
-const getAllOrganizations = async () => {
-
-    const query = `
-        SELECT 
-            organization_id,
-            name,
-            description,
-            contact_email,
-            logo_filename
-        FROM public.organization;
+async function getAllOrganizations() {
+    const sql = `
+        SELECT *
+        FROM organizations
+        ORDER BY organization_id;
     `;
 
-    const result = await db.query(query);
-
+    const result = await db.query(sql);
     return result.rows;
 }
 
-export { getAllOrganizations }
+module.exports = {
+    getAllOrganizations
+};
