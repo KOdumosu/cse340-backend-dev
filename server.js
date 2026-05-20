@@ -23,6 +23,33 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src/views'));
 
+/*** Middleware ***/
+
+// Static files
+app.use(express.static(path.join(__dirname, 'public')));
+
+// EJS setup
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'src/views'));
+
+// Middleware to log all incoming requests
+app.use((req, res, next) => {
+
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`${req.method} ${req.url}`);
+    }
+
+    next();
+});
+
+// Middleware to make NODE_ENV available to all templates
+app.use((req, res, next) => {
+
+    res.locals.NODE_ENV = process.env.NODE_ENV;
+
+    next();
+});
+
 /*** ROUTES ***/
 
 // Home
@@ -32,42 +59,63 @@ app.get('/', (req, res) => {
 
 // Organizations
 app.get('/organizations', async (req, res) => {
+
     try {
-        const organizations = await orgModel.getAllOrganizations();
+
+        const organizations =
+            await orgModel.getAllOrganizations();
+
         res.render('organizations', {
-    title: 'Organizations',
-    organizations
-});
+            title: 'Organizations',
+            organizations
+        });
+
     } catch (err) {
+
         console.error('Organizations error:', err.message);
+
         res.status(500).send('Server Error');
     }
 });
 
 // Projects
 app.get('/projects', async (req, res) => {
+
     try {
-        const projects = await projectModel.getAllProjects();
+
+        const projects =
+            await projectModel.getAllProjects();
+
         res.render('projects', {
-    title: 'Projects',
-    projects
-});
+            title: 'Projects',
+            projects
+        });
+
     } catch (err) {
+
         console.error('Projects error:', err.message);
+
         res.status(500).send('Server Error');
     }
 });
 
 // Categories
 app.get('/categories', async (req, res) => {
+
     try {
-        const categories = await categoriesModel.getAllCategories();
+
+        const categories =
+            await categoriesModel.getAllCategories();
+
         res.render('categories', {
-    title: 'Categories',
-    categories
-});
+            title: 'Categories',
+            categories
+        });
+
     } catch (err) {
+
         console.error('Categories error:', err.message);
+
         res.status(500).send('Server Error');
     }
 });
