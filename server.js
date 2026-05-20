@@ -120,6 +120,64 @@ app.get('/categories', async (req, res) => {
     }
 });
 
+
+
+// Test route for 500 errors
+app.get('/test-error', (req, res, next) => {
+
+    const err = new Error('This is a test error');
+
+    err.status = 500;
+
+    next(err);
+});
+
+
+// Catch-all route for 404 errors
+app.use((req, res, next) => {
+
+    const err = new Error('Page Not Found');
+
+    err.status = 404;
+
+    next(err);
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+
+    // Log errors
+    console.error('Error occurred:', err.message);
+
+    console.error('Stack trace:', err.stack);
+
+    // Determine status
+    const status = err.status || 500;
+
+    // Determine template
+    const template =
+        status === 404 ? '404' : '500';
+
+    // Context for template
+    const context = {
+
+        title:
+            status === 404
+                ? 'Page Not Found'
+                : 'Server Error',
+
+        error: err.message,
+
+        stack: err.stack
+    };
+
+    // Render error page
+    res
+        .status(status)
+        .render(`errors/${template}`, context);
+});
+
+
 /*** START SERVER ***/
 app.listen(PORT, () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
