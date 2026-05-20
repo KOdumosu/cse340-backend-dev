@@ -1,21 +1,17 @@
-import express from 'express';
+const express = require('express');
 
-import { showHomePage } from './controllers/index.js';
-import { showOrganizationsPage } from './controllers/organizations.js';
-import { showProjectsPage } from './controllers/projects.js';
-import { showCategoriesPage } from './controllers/categories.js';
-import { testErrorPage } from './controllers/errors.js';
+const { showHomePage } = require('./controllers/index');
+const { showOrganizationsPage } = require('./controllers/organizations');
+const { showProjectsPage } = require('./controllers/projects');
+const { showCategoriesPage } = require('./controllers/categories');
+const { testErrorPage } = require('./controllers/errors');
 
 const router = express.Router();
 
 router.get('/', showHomePage);
-
 router.get('/organizations', showOrganizationsPage);
-
 router.get('/projects', showProjectsPage);
-
 router.get('/categories', showCategoriesPage);
-
 router.get('/test-error', testErrorPage);
 
-export default router;
+module.exports = router;

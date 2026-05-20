@@ -9,6 +9,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // static
+console.log('router:', router);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ejs
