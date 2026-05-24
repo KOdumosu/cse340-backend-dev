@@ -1,4 +1,8 @@
-import { getAllCategories } from '../models/categories.js';
+const {
+    getAllCategories,
+    getCategoryById,
+    getProjectsByCategoryId
+} = require('../models/categories');
 
 const showCategoriesPage = async (req, res, next) => {
     try {
@@ -14,4 +18,26 @@ const showCategoriesPage = async (req, res, next) => {
     }
 };
 
-export { showCategoriesPage };
+const showCategoryDetailsPage = async (req, res, next) => {
+    try {
+        const categoryId = req.params.id;
+
+        const category = await getCategoryById(categoryId);
+
+        const projects = await getProjectsByCategoryId(categoryId);
+
+        res.render('category', {
+            title: category.name,
+            category,
+            projects
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = {
+    showCategoriesPage,
+    showCategoryDetailsPage
+};

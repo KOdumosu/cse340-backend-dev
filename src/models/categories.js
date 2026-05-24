@@ -1,16 +1,42 @@
 const db = require('./db');
 
-async function getAllCategories() {
-    const sql = `
+const getAllCategories = async () => {
+    const result = await db.query(`
+        SELECT * FROM categories
+        ORDER BY category_id;
+    `);
+
+    return result.rows;
+};
+
+const getCategoryById = async (categoryId) => {
+    const result = await db.query(`
         SELECT *
         FROM categories
-        ORDER BY category_id;
-    `;
+        WHERE category_id = $1;
+    `, [categoryId]);
 
-    const result = await db.query(sql);
+    return result.rows[0];
+};
+
+const getProjectsByCategoryId = async (categoryId) => {
+    const result = await db.query(`
+        SELECT
+            p.project_id,
+            p.project_name,
+            p.description
+        FROM projects p
+        JOIN project_categories pc
+            ON p.project_id = pc.project_id
+        WHERE pc.category_id = $1
+        ORDER BY p.project_name;
+    `, [categoryId]);
+
     return result.rows;
-}
+};
 
 module.exports = {
-    getAllCategories
+    getAllCategories,
+    getCategoryById,
+    getProjectsByCategoryId
 };
