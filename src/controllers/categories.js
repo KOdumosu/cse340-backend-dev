@@ -4,20 +4,21 @@ const {
     getProjectsByCategoryId
 } = require('../models/categories');
 
+// Show all categories
 const showCategoriesPage = async (req, res, next) => {
     try {
         const categories = await getAllCategories();
 
         res.render('categories', {
-            title: 'Service Categories',
+            title: 'Categories',
             categories
         });
-
     } catch (error) {
         next(error);
     }
 };
 
+// Show single category details
 const showCategoryDetailsPage = async (req, res, next) => {
     try {
         const categoryId = req.params.id;
@@ -31,7 +32,6 @@ const showCategoryDetailsPage = async (req, res, next) => {
             category,
             projects
         });
-
     } catch (error) {
         next(error);
     }

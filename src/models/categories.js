@@ -1,26 +1,40 @@
 const db = require('./db');
 
+/**
+ * Get all categories
+ */
 const getAllCategories = async () => {
-    const result = await db.query(`
-        SELECT * FROM categories
+    const sql = `
+        SELECT *
+        FROM categories
         ORDER BY category_id;
-    `);
+    `;
+
+    const result = await db.query(sql);
 
     return result.rows;
 };
 
+/**
+ * Get single category by ID
+ */
 const getCategoryById = async (categoryId) => {
-    const result = await db.query(`
+    const sql = `
         SELECT *
         FROM categories
         WHERE category_id = $1;
-    `, [categoryId]);
+    `;
+
+    const result = await db.query(sql, [categoryId]);
 
     return result.rows[0];
 };
 
+/**
+ * Get projects by category
+ */
 const getProjectsByCategoryId = async (categoryId) => {
-    const result = await db.query(`
+    const sql = `
         SELECT
             p.project_id,
             p.project_name,
@@ -30,7 +44,9 @@ const getProjectsByCategoryId = async (categoryId) => {
             ON p.project_id = pc.project_id
         WHERE pc.category_id = $1
         ORDER BY p.project_name;
-    `, [categoryId]);
+    `;
+
+    const result = await db.query(sql, [categoryId]);
 
     return result.rows;
 };

@@ -2,21 +2,57 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const session = require('express-session');
+
 const db = require('./src/models/db');
 const router = require('./src/routes');
+
+const flash = require('./src/middleware/flash.js'); // IMPORTANT: change export style if needed
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// static
-console.log('router:', router);
-app.use(express.static(path.join(__dirname, 'public')));
-
-// ejs
+/**
+ * --------------------
+ * VIEW ENGINE SETUP
+ * --------------------
+ */
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', path.join(__dirname, 'src', 'views'));
 
-// middleware
+/**
+ * --------------------
+ * MIDDLEWARES
+ * --------------------
+ */
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+app.use((req, res, next) => {
+    res.locals.flash = req.flash ? req.flash.bind(req) : () => ({});
+    next();
+});
+/**
+ * SESSION MIDDLEWARE (MUST BE FIRST)
+ */
+const SESSION_SECRET = process.env.SESSION_SECRET;
+
+app.use(session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
+}));
+
+/**
+ * FLASH MIDDLEWARE (MUST BE AFTER SESSION)
+ */
+app.use(flash);
+
+/**
+ * DEV LOGGER
+ */
 app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -24,37 +60,48 @@ app.use((req, res, next) => {
     next();
 });
 
+/**
+ * GLOBAL VARIABLES
+ */
 app.use((req, res, next) => {
     res.locals.NODE_ENV = process.env.NODE_ENV;
     next();
 });
 
-// ✅ MVC ROUTES HERE
+/**
+ * ROUTES
+ */
 app.use(router);
 
-// 404
-app.use((req, res, next) => {
-    const err = new Error('Page Not Found');
-    err.status = 404;
-    next(err);
+/**
+ * 404 HANDLER
+ */
+app.use((req, res) => {
+    res.status(404).render('errors/404', {
+        title: 'Page Not Found',
+        error: 'The page you are looking for does not exist.'
+    });
 });
 
-// error handler
+/**
+ * ERROR HANDLER
+ */
 app.use((err, req, res, next) => {
     console.error(err.message);
     console.error(err.stack);
 
     const status = err.status || 500;
-    const template = status === 404 ? '404' : '500';
 
-    res.status(status).render(`errors/${template}`, {
-        title: status === 404 ? 'Page Not Found' : 'Server Error',
+    res.status(status).render('errors/500', {
+        title: 'Server Error',
         error: err.message,
-        stack: err.stack
+        stack: process.env.NODE_ENV === 'development' ? err.stack : null
     });
 });
 
-// start
+/**
+ * START SERVER
+ */
 app.listen(PORT, async () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
 

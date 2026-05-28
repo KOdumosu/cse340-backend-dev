@@ -50,7 +50,7 @@ const getProjectsByOrganizationId = async (organizationId) => {
             p.organization_id
         FROM projects p
         WHERE p.organization_id = $1
-        ORDER BY p.project_id;
+        ORDER BY p.project_name;
     `;
 
     const result = await db.query(sql, [organizationId]);
@@ -63,12 +63,12 @@ const getCategoriesByProjectId = async (projectId) => {
     const sql = `
         SELECT
             c.category_id,
-            c.name
+            c.category_name
         FROM categories c
         JOIN project_categories pc
             ON c.category_id = pc.category_id
         WHERE pc.project_id = $1
-        ORDER BY c.name;
+        ORDER BY c.category_name;
     `;
 
     const result = await db.query(sql, [projectId]);

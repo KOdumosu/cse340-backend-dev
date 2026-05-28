@@ -5,12 +5,17 @@
 
     <p>Here are a few of our partner organizations:</p>
 
-   <ul>
-    <% organizations.forEach(org => { %>
-        <li><%= org.name %> - <%= org.contact_email %></li>
-    <% }) %>
-</ul>
+    <ul>
+        <% organizations.forEach(org => { %>
+            <li>
+                <a href="/organization/<%= org.organization_id %>">
+                    <%= org.name %>
+                </a>
 
+                - <%= org.contact_email %>
+            </li>
+        <% }) %>
+    </ul>
 </main>
 
 <%- include('partials/footer') %>

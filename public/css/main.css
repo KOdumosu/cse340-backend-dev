@@ -72,3 +72,28 @@ footer {
         margin: 1rem;
     }
 }
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.alert.success {
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.alert.error {
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+.alert.warning {
+    color: #856404;
+    background-color: #fff3cd;
+}
+
+.alert.info {
+    color: #0c5460;
+    background-color: #d1ecf1;
+}
