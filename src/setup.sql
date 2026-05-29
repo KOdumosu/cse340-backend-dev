@@ -11,6 +11,9 @@ CREATE TABLE organizations (
     logo_filename VARCHAR(255) NOT NULL
 );
 
+ALTER TABLE organizations
+ADD COLUMN logo_filename VARCHAR(255);
+
 CREATE TABLE projects (
     project_id SERIAL PRIMARY KEY,
     project_name VARCHAR(150) NOT NULL,

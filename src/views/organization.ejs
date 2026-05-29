@@ -3,32 +3,24 @@
 <main>
     <h1><%= organization.name %></h1>
 
+    <p><%= organization.description %></p>
+
     <p>
-        <strong>Contact Email:</strong>
+        Contact:
         <%= organization.contact_email %>
     </p>
 
-    <h2>Service Projects</h2>
+    <h2>Projects</h2>
 
-    <% if (projects.length > 0) { %>
-
-        <ul>
-            <% projects.forEach(project => { %>
-
-                <li>
-                    <a href="/project/<%= project.project_id %>">
-                        <%= project.project_name %>
-                    </a>
-                </li>
-
-            <% }) %>
-        </ul>
-
-    <% } else { %>
-
-        <p>No projects found for this organization.</p>
-
-    <% } %>
+    <ul>
+        <% projects.forEach(project => { %>
+            <li>
+                <a href="/project/<%= project.project_id %>">
+                    <%= project.project_name %>
+                </a>
+            </li>
+        <% }) %>
+    </ul>
 </main>
 
 <%- include('partials/footer') %>
