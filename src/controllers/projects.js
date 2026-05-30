@@ -9,7 +9,7 @@ const showProjectsPage = async (req, res, next) => {
         const projects = await getAllProjects();
 
         res.render('projects', {
-            title: 'Service Projects',
+            title: 'Our Service Projects',
             projects
         });
 

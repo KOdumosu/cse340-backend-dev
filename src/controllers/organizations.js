@@ -57,13 +57,16 @@ const showOrganizationDetailsPage = async (req, res, next) => {
 /**
  * Show new organization form
  */
-const showNewOrganizationForm = async (req, res) => {
-
+const showNewOrganizationForm = (req, res) => {
     res.render('new-organization', {
-        title: 'Add New Organization'
+        title: 'New Organization',
+        errors: [],
+        name: '',
+        description: '',
+        contact_email: '',
+        logo_filename: ''
     });
 };
-
 /**
  * Process new organization form
  */

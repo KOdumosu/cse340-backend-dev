@@ -1,58 +1,47 @@
-const db = require('./db');
+const db = require("./db")
 
-/**
- * Get all categories
- */
-const getAllCategories = async () => {
-    const sql = `
-        SELECT *
-        FROM categories
-        ORDER BY category_id;
-    `;
+async function getAllCategories() {
+  const result = await db.query(
+    "SELECT * FROM categories ORDER BY category_name"
+  )
+  return result.rows
+}
 
-    const result = await db.query(sql);
+async function getCategoryById(id) {
+  const result = await db.query(
+    "SELECT * FROM categories WHERE category_id = $1",
+    [id]
+  )
 
-    return result.rows;
-};
+  return result.rows[0]
+}
 
-/**
- * Get single category by ID
- */
-const getCategoryById = async (categoryId) => {
-    const sql = `
-        SELECT *
-        FROM categories
-        WHERE category_id = $1;
-    `;
+async function createCategory(categoryName) {
+  const result = await db.query(
+    `INSERT INTO categories (category_name)
+     VALUES ($1)
+     RETURNING *`,
+    [categoryName]
+  )
 
-    const result = await db.query(sql, [categoryId]);
+  return result.rows[0]
+}
 
-    return result.rows[0];
-};
+async function updateCategory(id, categoryName) {
+  const result = await db.query(
+    `UPDATE categories
+     SET category_name = $1
+     WHERE category_id = $2
+     RETURNING *`,
+    [categoryName, id]
+  )
 
-/**
- * Get projects by category
- */
-const getProjectsByCategoryId = async (categoryId) => {
-    const sql = `
-        SELECT
-            p.project_id,
-            p.project_name,
-            p.description
-        FROM projects p
-        JOIN project_categories pc
-            ON p.project_id = pc.project_id
-        WHERE pc.category_id = $1
-        ORDER BY p.project_name;
-    `;
-
-    const result = await db.query(sql, [categoryId]);
-
-    return result.rows;
-};
+  return result.rows[0]
+}
 
 module.exports = {
-    getAllCategories,
-    getCategoryById,
-    getProjectsByCategoryId
-};
+  getAllCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory
+}

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
+
 /**
  * HOME CONTROLLER
  */
@@ -31,13 +32,15 @@ const {
  */
 const {
     showCategoriesPage,
-    showCategoryDetailsPage
+    showCategoryDetailsPage,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    showEditCategoryForm,
+    processEditCategoryForm
 } = require('./controllers/categories');
 
 
-/**
- * HOME ROUTE
- */
+/*** HOME ROUTE*/
 router.get('/', showHomePage);
 
 
@@ -53,20 +56,25 @@ router.get('/new-organization', showNewOrganizationForm);
 router.post('/new-organization', processNewOrganizationForm);
 
 
-/**
- * PROJECT ROUTES
- */
+/*** PROJECT ROUTES
+*/
 router.get('/projects', showProjectsPage);
 
 router.get('/project/:id', showProjectDetailsPage);
 
 
-/**
- * CATEGORY ROUTES
- */
+/*** CATEGORY ROUTES*/
 router.get('/categories', showCategoriesPage);
 
 router.get('/category/:id', showCategoryDetailsPage);
+
+router.get('/new-category', showNewCategoryForm);
+
+router.post('/new-category', processNewCategoryForm);
+
+router.get('/edit-category/:id', showEditCategoryForm);
+
+router.post('/edit-category/:id', processEditCategoryForm);
 
 
 module.exports = router;

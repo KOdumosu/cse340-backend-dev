@@ -1,26 +1,47 @@
 <%- include('partials/header') %>
 
-<main>
+<main class="page-container">
+
+
+<section class="page-header">
     <h1><%= title %></h1>
-
-    <p>Here are a few of our partner organizations:</p>
-
-    <ul>
-        <% organizations.forEach(org => { %>
-            <li>
-                <a href="/organization/<%= org.organization_id %>">
-                    <%= org.name %>
-                </a>
-                - <%= org.contact_email %>
-            </li>
-        <% }) %>
-    </ul>
-
-    <p>
-        <a href="/new-organization">
-            Add a new organization
-        </a>
+    <p class="page-description">
+        Browse our partner organizations and learn about the important work they do in the community.
     </p>
+
+    <a href="/new-organization" class="btn-primary">
+        Add New Organization
+    </a>
+</section>
+
+<section class="organization-card">
+    <% if (organizations.length > 0) { %>
+
+        <ul class="organization-list">
+            <% organizations.forEach(org => { %>
+                <li class="organization-item">
+                    <h3>
+                        <a href="/organization/<%= org.organization_id %>">
+                            <%= org.name %>
+                        </a>
+                    </h3>
+
+                    <p>
+                        <strong>Email:</strong>
+                        <%= org.contact_email %>
+                    </p>
+                </li>
+            <% }) %>
+        </ul>
+
+    <% } else { %>
+
+        <p>No organizations found.</p>
+
+    <% } %>
+</section>
+
+
 </main>
 
 <%- include('partials/footer') %>

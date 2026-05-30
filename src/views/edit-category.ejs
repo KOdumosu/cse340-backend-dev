@@ -1,0 +1,32 @@
+<h1>Edit Category</h1>
+
+<% if (errors && errors.length > 0) { %>
+<ul>
+  <% errors.forEach(error => { %>
+    <li><%= error %></li>
+  <% }) %>
+</ul>
+<% } %>
+
+<form
+  action="/edit-category/<%= category.category_id %>"
+  method="POST"
+>
+
+  <label>
+    Category Name
+  </label>
+
+  <input
+    type="text"
+    name="category_name"
+    maxlength="100"
+    required
+    value="<%= category.category_name %>"
+  >
+
+  <button type="submit">
+    Update Category
+  </button>
+
+</form>
