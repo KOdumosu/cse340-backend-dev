@@ -24,6 +24,10 @@
                         <a href="/organization/<%= org.organization_id %>">
                             <%= org.name %>
                         </a>
+
+                         <a href="/edit-organization/<%= org.organization_id %>">
+                             Edit
+                        </a>
                     </h3>
 
                     <p>
@@ -31,6 +35,8 @@
                         <%= org.contact_email %>
                     </p>
                 </li>
+
+                
             <% }) %>
         </ul>
 

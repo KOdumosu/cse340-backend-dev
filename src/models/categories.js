@@ -39,9 +39,34 @@ async function updateCategory(id, categoryName) {
   return result.rows[0]
 }
 
+async function getProjectsByCategoryId(categoryId) {
+  const result = await db.query(
+    `
+    SELECT
+      p.project_id,
+      p.project_name,
+      p.description,
+      p.organization_id,
+      o.name AS organization_name
+    FROM projects p
+    JOIN project_categories pc
+      ON p.project_id = pc.project_id
+    JOIN organizations o
+      ON p.organization_id = o.organization_id
+    WHERE pc.category_id = $1
+    ORDER BY p.project_name
+    `,
+    [categoryId]
+  )
+
+  return result.rows
+}
+
+
 module.exports = {
   getAllCategories,
   getCategoryById,
   createCategory,
-  updateCategory
+  updateCategory,
+  getProjectsByCategoryId
 }

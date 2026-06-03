@@ -7,10 +7,10 @@ const session = require('express-session');
 const db = require('./src/models/db');
 const router = require('./src/routes');
 
-const flash = require('./src/middleware/flash.js'); // IMPORTANT: change export style if needed
+const flash = require('./src/middleware/flash.js'); 
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 /**
  * --------------------
