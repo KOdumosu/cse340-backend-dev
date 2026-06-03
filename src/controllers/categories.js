@@ -1,17 +1,18 @@
+const categoryModel = require('../models/categories');
+
 const {
     getAllCategories,
     getCategoryById,
-    categoryModel,
     getProjectsByCategoryId
-} = require('../models/categories');
-
+} = categoryModel;
 
 const showNewCategoryForm = (req, res) => {
   res.render("new-category", {
     title: "New Category",
-    errors: []
-  })
-}
+    errors: [],
+    category_name: ""
+  });
+};
 
 /**process category form */
 const processNewCategoryForm = async (req, res) => {
@@ -35,7 +36,7 @@ const processNewCategoryForm = async (req, res) => {
     })
   }
 
-  await categoryModel.createCategory(category_name)
+  await categoryModel.createCategory(category_name);
 
   res.redirect("/categories")
 }
