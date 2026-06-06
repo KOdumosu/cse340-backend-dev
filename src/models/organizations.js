@@ -1,8 +1,6 @@
-const db = require('./db');
+import db from './db.js';
 
-/**
- * Get all organizations
- */
+/*** Get all organizations*/
 const getAllOrganizations = async () => {
   const result = await db.query(`
     SELECT *
@@ -13,9 +11,7 @@ const getAllOrganizations = async () => {
   return result.rows;
 };
 
-/**
- * Get single organization by ID
- */
+/*** Get single organization by ID*/
 const getOrganizationById = async (organizationId) => {
   const result = await db.query(`
     SELECT *
@@ -26,9 +22,7 @@ const getOrganizationById = async (organizationId) => {
   return result.rows[0];
 };
 
-/**
- * Create a new organization
- */
+/*** Create a new organization*/
 const createOrganization = async (
   name,
   description,
@@ -57,8 +51,8 @@ const createOrganization = async (
   return result.rows[0].organization_id;
 };
 
-module.exports = {
+export {
   getAllOrganizations,
   getOrganizationById,
-  createOrganization
+  createOrganization,
 };

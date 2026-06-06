@@ -2,7 +2,12 @@ DROP TABLE IF EXISTS project_categories;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS organizations;
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS roles;
 
+----------------------------------------------------
+-- ORGANIZATIONS
+----------------------------------------------------
 CREATE TABLE organizations (
     organization_id SERIAL PRIMARY KEY,
     name VARCHAR(150) NOT NULL,
@@ -11,9 +16,9 @@ CREATE TABLE organizations (
     logo_filename VARCHAR(255) NOT NULL
 );
 
-ALTER TABLE organizations
-ADD COLUMN logo_filename VARCHAR(255);
-
+----------------------------------------------------
+-- PROJECTS
+----------------------------------------------------
 CREATE TABLE projects (
     project_id SERIAL PRIMARY KEY,
     project_name VARCHAR(150) NOT NULL,
@@ -24,11 +29,18 @@ CREATE TABLE projects (
         ON DELETE CASCADE
 );
 
+
+----------------------------------------------------
+-- CATEGORIES
+----------------------------------------------------
 CREATE TABLE categories (
     category_id SERIAL PRIMARY KEY,
     category_name VARCHAR(100) NOT NULL UNIQUE
 );
 
+----------------------------------------------------
+-- PROJECT-CATEGORY RELATIONSHIP
+----------------------------------------------------
 CREATE TABLE project_categories (
     project_id INT NOT NULL,
     category_id INT NOT NULL,
@@ -42,13 +54,58 @@ CREATE TABLE project_categories (
 );
 
 ----------------------------------------------------
+-- CREATE ROLES TABLE
+----------------------------------------------------
+CREATE TABLE roles (
+    role_id SERIAL PRIMARY KEY,
+    role_name VARCHAR(50) UNIQUE NOT NULL,
+    role_description TEXT
+);
+
+INSERT INTO roles (role_name, role_description) VALUES 
+('user', 'Standard user with basic access'),
+('admin', 'Administrator with full system access');
+
+
+
+CREATE TABLE users (
+    user_id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role_id INTEGER REFERENCES roles(role_id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+----------------------------------------------------
 -- ORGANIZATIONS
 ----------------------------------------------------
-INSERT INTO organizations (name, description, contact_email, logo_filename)
+INSERT INTO organizations (
+    name,
+    description,
+    contact_email,
+    logo_filename
+)
 VALUES
-('BrightFuture Builders', 'Community infrastructure nonprofit.', 'info@brightfuture.org', 'brightfuture.png'),
-('GreenHarvest Growers', 'Urban farming and sustainability group.', 'contact@greenharvest.org', 'greenharvest.png'),
-('UnityServe Volunteers', 'Volunteer coordination organization.', 'hello@unityserve.org', 'unityserve.png');
+(
+    'BrightFuture Builders',
+    'Community infrastructure nonprofit.',
+    'info@brightfuture.org',
+    'brightfuture.png'
+),
+(
+    'GreenHarvest Growers',
+    'Urban farming and sustainability group.',
+    'contact@greenharvest.org',
+    'greenharvest.png'
+),
+(
+    'UnityServe Volunteers',
+    'Volunteer coordination organization.',
+    'hello@unityserve.org',
+    'unityserve.png'
+);
 
 ----------------------------------------------------
 -- CATEGORIES
@@ -61,11 +118,15 @@ VALUES
 ('Health and Wellness');
 
 ----------------------------------------------------
--- PROJECTS (5 PER ORGANIZATION = 15 TOTAL)
+-- PROJECTS
 ----------------------------------------------------
 
 -- Organization 1
-INSERT INTO projects (project_name, description, organization_id)
+INSERT INTO projects (
+    project_name,
+    description,
+    organization_id
+)
 VALUES
 ('Food Drive Initiative', 'Monthly food distribution program.', 1),
 ('School Renovation', 'Repairing local public schools.', 1),
@@ -74,7 +135,11 @@ VALUES
 ('Youth Training Program', 'Skills development for youths.', 1);
 
 -- Organization 2
-INSERT INTO projects (project_name, description, organization_id)
+INSERT INTO projects (
+    project_name,
+    description,
+    organization_id
+)
 VALUES
 ('Urban Farming Expansion', 'Community garden development.', 2),
 ('Tree Planting Campaign', 'Environmental restoration project.', 2),
@@ -83,7 +148,11 @@ VALUES
 ('Green Market Initiative', 'Supporting local organic farmers.', 2);
 
 -- Organization 3
-INSERT INTO projects (project_name, description, organization_id)
+INSERT INTO projects (
+    project_name,
+    description,
+    organization_id
+)
 VALUES
 ('Volunteer Recruitment Drive', 'Bringing in new volunteers.', 3),
 ('Community Cleanup', 'Neighborhood sanitation effort.', 3),
@@ -92,16 +161,25 @@ VALUES
 ('Emergency Relief Support', 'Disaster response assistance.', 3);
 
 ----------------------------------------------------
--- PROJECT CATEGORY MAPPINGS (EVERY PROJECT HAS ≥1)
+-- PROJECT CATEGORY ASSIGNMENTS
 ----------------------------------------------------
-
-INSERT INTO project_categories (project_id, category_id)
+INSERT INTO project_categories (
+    project_id,
+    category_id
+)
 VALUES
--- Org 1 projects (1–5)
-(1, 3), (2, 2), (3, 4), (4, 1), (5, 2),
-
--- Org 2 projects (6–10)
-(6, 1), (7, 1), (8, 2), (9, 3), (10, 1),
-
--- Org 3 projects (11–15)
-(11, 3), (12, 3), (13, 4), (14, 2), (15, 3);
+(1,3),
+(2,2),
+(3,4),
+(4,1),
+(5,2),
+(6,1),
+(7,1),
+(8,2),
+(9,3),
+(10,1),
+(11,3),
+(12,3),
+(13,4),
+(14,2),
+(15,3);

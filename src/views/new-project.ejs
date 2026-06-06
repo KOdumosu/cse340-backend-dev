@@ -1,87 +1,60 @@
 <%- include('partials/header') %>
 
-<main class="form-container">
+<div style="max-width: 700px; margin: 40px auto; padding: 25px; background: #fff; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.08);">
 
-    <h1>Add New Project</h1>
+    <h1 style="text-align: center; margin-bottom: 25px; color: #333;">
+        Create New Project
+    </h1>
 
-    <% if (errors && errors.length > 0) { %>
+    <form method="POST" action="/new-project" style="display: flex; flex-direction: column; gap: 15px;">
 
-        <div class="error-box">
-            <ul>
-                <% errors.forEach(error => { %>
-                    <li><%= error %></li>
-                <% }) %>
-            </ul>
-        </div>
+        <label style="font-weight: 600;">Project Name</label>
+        <input 
+            type="text" 
+            name="project_name" 
+            required 
+            placeholder="Enter project name"
+            style="padding: 12px; border: 1px solid #ccc; border-radius: 8px;"
+        />
 
-    <% } %>
+        <label style="font-weight: 600;">Description</label>
+        <textarea 
+            name="description" 
+            rows="5"
+            placeholder="Describe your project..."
+            style="padding: 12px; border: 1px solid #ccc; border-radius: 8px; resize: vertical;"
+        ></textarea>
 
-    <form action="/new-project" method="POST" class="organization-form">
+        <label style="font-weight: 600;">Organization</label>
+        <select 
+            name="organization_id"
+            style="padding: 12px; border: 1px solid #ccc; border-radius: 8px;"
+        >
+            <option value="">Select Organization</option>
+            <option value="1">Organization A</option>
+            <option value="2">Organization B</option>
+        </select>
 
-        <div class="form-group">
-
-            <label for="project_name">
-                Project Name
-            </label>
-
-            <input
-                type="text"
-                id="project_name"
-                name="project_name"
-                required
-                maxlength="150"
-                value="<%= project_name || '' %>"
-            >
-
-        </div>
-
-        <div class="form-group">
-
-            <label for="description">
-                Description
-            </label>
-
-            <textarea
-                id="description"
-                name="description"
-                rows="5"
-                required
-            ><%= description || '' %></textarea>
-
-        </div>
-
-        <div class="form-group">
-
-            <label for="organization_id">
-                Organization
-            </label>
-
-            <select
-                id="organization_id"
-                name="organization_id"
-                required
-            >
-
-                <% organizations.forEach(org => { %>
-
-                    <option value="<%= org.organization_id %>">
-
-                        <%= org.name %>
-
-                    </option>
-
-                <% }) %>
-
-            </select>
-
-        </div>
-
-        <button type="submit" class="btn-submit">
-            Save Project
+        <button 
+            type="submit"
+            style="
+                margin-top: 10px;
+                padding: 12px;
+                background: #2563eb;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                cursor: pointer;
+                transition: 0.2s;
+            "
+            onmouseover="this.style.background='#1d4ed8'"
+            onmouseout="this.style.background='#2563eb'"
+        >
+            Create Project
         </button>
 
     </form>
-
-</main>
+</div>
 
 <%- include('partials/footer') %>

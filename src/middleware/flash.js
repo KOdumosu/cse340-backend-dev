@@ -1,16 +1,16 @@
-module.exports = (req, res, next) => {
-
-    if (!req.session.messages) {
-        req.session.messages = [];
-    }
-
-    req.flashMessage = (message) => {
-        req.session.messages.push(message);
+const flash = (req, res, next) => {
+    res.locals.messages = {
+        success: req.session?.success || null,
+        error: req.session?.error || null
     };
 
-    res.locals.messages = req.session.messages;
+    req.flash = (type, message) => {
+        if (!req.session) return;
 
-    req.session.messages = [];
+        req.session[type] = message;
+    };
 
     next();
 };
+
+export default flash;

@@ -1,6 +1,7 @@
 {
   "name": "cse340-backend-development",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "homepage": "https://github.com/KOdumosu/cse340-backend-development#readme",
   "bugs": {
@@ -13,11 +14,13 @@
   "license": "ISC",
   "author": "Kehinde Odumosu",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "dev": "nodemon",
     "start": "node server.js"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^4.22.1",

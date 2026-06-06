@@ -1,0 +1,78 @@
+<%- include('partials/header') %>
+
+<main class="container">
+
+    <h1><%= title %></h1>
+
+    <% if (flash().success) { %>
+        <div class="success-message">
+            <%= flash().success %>
+        </div>
+    <% } %>
+
+    <% if (flash().error) { %>
+        <div class="error-message">
+            <%= flash().error %>
+        </div>
+    <% } %>
+
+    <form action="/login" method="POST" class="form-card">
+
+        <div class="form-group">
+            <label for="email">Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                name="email"
+                required
+            >
+        </div>
+
+        <div class="form-group">
+    <label for="password">Password</label>
+
+    <div style="display:flex; gap:10px;">
+        <input
+            type="password"
+            id="password"
+            name="password"
+            required
+        />
+
+        <button
+            type="button"
+            onclick="togglePassword()"
+        >
+            Show
+        </button>
+    </div>
+</div>
+
+        <button type="submit" class="btn">
+            Login
+        </button>
+
+    </form>
+
+</main>
+
+<script>
+function togglePassword() {
+    const password =
+        document.getElementById('password');
+
+    const btn =
+        document.getElementById('toggleBtn');
+
+    if (password.type === 'password') {
+        password.type = 'text';
+        btn.textContent = 'Hide';
+    } else {
+        password.type = 'password';
+        btn.textContent = 'Show';
+    }
+}
+</script>
+
+<%- include('partials/footer') %>

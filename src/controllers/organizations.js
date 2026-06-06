@@ -1,8 +1,6 @@
-const organizationModel = require("../models/organizations");
+import * as organizationModel from "../models/organizations.js";
 
-/**
- * GET /organizations
- */
+/*** GET /organizations*/
 const showOrganizationsPage = async (req, res, next) => {
   try {
     const organizations = await organizationModel.getAllOrganizations();
@@ -140,11 +138,11 @@ const processEditOrganizationForm = async (req, res, next) => {
   }
 };
 
-module.exports = {
+export {
   showOrganizationsPage,
   showOrganizationDetailsPage,
   showNewOrganizationForm,
   processNewOrganizationForm,
   showEditOrganizationForm,
-  processEditOrganizationForm,
+  processEditOrganizationForm
 };

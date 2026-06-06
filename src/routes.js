@@ -1,94 +1,156 @@
-const express = require('express');
+import express from 'express';
+
+import {
+    showOrganizationsPage,
+    showNewOrganizationForm,
+    processNewOrganizationForm,
+    showEditOrganizationForm,
+    processEditOrganizationForm
+} from './controllers/organizations.js';
+
+import {
+    getCategories,
+    showCategoryDetailsPage,
+    showNewCategoryForm,
+    processNewCategoryForm,
+    showEditCategoryForm,
+    processEditCategoryForm,
+    showAssignCategoriesForm,
+    processAssignCategoriesForm
+} from './controllers/categories.js';
+
+import {
+    showUserRegistrationForm,
+    processUserRegistrationForm,
+    showLoginForm,
+    processLoginForm,
+    processLogout,
+    showDashboard,
+    requireLogin,
+    requireRole
+} from './controllers/users.js';
+
+import {
+    showProjectsPage,
+    showNewProjectForm
+} from './controllers/projects.js';
+
 const router = express.Router();
 
-/*** HOME CONTROLLER*/
-const {
-  showHomePage
-} = require('./controllers/home');
+/* ================= HOME ================= */
 
-/***----------ORGANIZATION CONTROLLER-------*/
-const {
-  showOrganizationsPage,
-  showOrganizationDetailsPage,
-  showNewOrganizationForm,
-  processNewOrganizationForm,
-  showEditOrganizationForm,
-  processEditOrganizationForm
-} = require('./controllers/organizations');
+router.get('/', (req, res) => {
+    res.render('home', { title: 'Home' });
+});
 
-/***--------- PROJECT CONTROLLER--------*/
-const {
-  showProjectsPage,
-  showProjectDetailsPage,
-  showNewProjectForm,
-  processNewProjectForm,
-  showEditProjectForm,
-  processEditProjectForm
-} = require('./controllers/projects');
+/* ================= AUTH ================= */
 
-/***---------CATEGORY CONTROLLER---------*/
-const {
-  showCategoriesPage,
-  showCategoryDetailsPage,
-  showNewCategoryForm,
-  processNewCategoryForm,
-  showEditCategoryForm,
-  processEditCategoryForm
-} = require('./controllers/categories');
+router.get('/register', showUserRegistrationForm);
+router.post('/register', processUserRegistrationForm);
 
+router.get('/login', showLoginForm);
+router.post('/login', processLoginForm);
 
-/* =========================HOME ROUTE========================= */
-router.get('/', showHomePage);
+router.get('/logout', processLogout);
 
+/* ================= DASHBOARD ================= */
 
-/* =========================ORGANIZATION ROUTES======================== */
+router.get(
+    '/dashboard',
+    requireLogin,
+    showDashboard
+);
 
-router.get('/organizations', showOrganizationsPage);
+/* ================= ORGANIZATIONS ================= */
 
-router.get('/organization/:id', showOrganizationDetailsPage);
+router.get(
+    '/organizations',
+    showOrganizationsPage
+);
 
-router.get('/new-organization', showNewOrganizationForm);
+router.get(
+    '/new-organization',
+    requireRole('admin'),
+    showNewOrganizationForm
+);
 
-router.post('/new-organization', processNewOrganizationForm);
+router.post(
+    '/new-organization',
+    requireRole('admin'),
+    processNewOrganizationForm
+);
 
-/* ---------------EDIT ORGANIZATION------------------- */
-router.get('/edit-organization/:id', showEditOrganizationForm);
+router.get(
+    '/edit-organization/:id',
+    requireRole('admin'),
+    showEditOrganizationForm
+);
 
-router.post('/edit-organization/:id', processEditOrganizationForm);
+router.post(
+    '/edit-organization/:id',
+    requireRole('admin'),
+    processEditOrganizationForm
+);
 
+/* ================= PROJECTS ================= */
 
-/* =========================PROJECT ROUTES========================= */
+router.get(
+    '/projects',
+    showProjectsPage
+);
 
-router.get('/projects', showProjectsPage);
+router.get(
+    '/new-project',
+    requireRole('admin'),
+    showNewProjectForm
+);
 
-router.get('/project/:id', showProjectDetailsPage);
+/* ================= CATEGORIES ================= */
 
-/*--------------- NEW PROJECT------------- */
-router.get('/new-project', showNewProjectForm);
+router.get(
+    '/categories',
+    getCategories
+);
 
-router.post('/new-project', processNewProjectForm);
+router.get(
+    '/categories/:id',
+    showCategoryDetailsPage
+);
 
-/*---------- EDIT PROJECT----------- */
-router.get('/edit-project/:id', showEditProjectForm);
+router.get(
+    '/new-category',
+    requireRole('admin'),
+    showNewCategoryForm
+);
 
-router.post('/edit-project/:id',processEditProjectForm);
+router.post(
+    '/new-category',
+    requireRole('admin'),
+    processNewCategoryForm
+);
 
+router.get(
+    '/edit-category/:id',
+    requireRole('admin'),
+    showEditCategoryForm
+);
 
-/* =========================  CATEGORY ROUTES========================= */
+router.post(
+    '/edit-category/:id',
+    requireRole('admin'),
+    processEditCategoryForm
+);
 
-router.get('/categories', showCategoriesPage);
+router.get(
+    '/assign-categories/:projectId',
+    requireRole('admin'),
+    showAssignCategoriesForm
+);
 
-router.get('/category/:id', showCategoryDetailsPage);
+router.post(
+    '/assign-categories/:projectId',
+    requireRole('admin'),
+    processAssignCategoriesForm
+);
 
-/* NEW CATEGORY */
-router.get('/new-category', showNewCategoryForm);
-
-router.post('/new-category', processNewCategoryForm);
-
-/* EDIT CATEGORY */
-router.get('/edit-category/:id', showEditCategoryForm);
-
-router.post('/edit-category/:id',processEditCategoryForm);
-
-
-module.exports = router;
+export default router;

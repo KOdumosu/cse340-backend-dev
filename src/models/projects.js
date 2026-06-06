@@ -1,7 +1,7 @@
-const db = require('./db');
+import db from './db.js';
 
 // Get all projects
-const getAllProjects = async () => {
+export const getAllProjects = async () => {
   const sql = `
     SELECT
       p.project_id,
@@ -20,7 +20,7 @@ const getAllProjects = async () => {
 };
 
 // Get project details
-const getProjectDetails = async (projectId) => {
+export const getProjectDetails = async (projectId) => {
   const sql = `
     SELECT
       p.project_id,
@@ -39,7 +39,7 @@ const getProjectDetails = async (projectId) => {
 };
 
 // Get categories for a project
-const getCategoriesByProjectId = async (projectId) => {
+export const getCategoriesByProjectId = async (projectId) => {
   const sql = `
     SELECT
       c.category_id,
@@ -53,10 +53,4 @@ const getCategoriesByProjectId = async (projectId) => {
 
   const result = await db.query(sql, [projectId]);
   return result.rows;
-};
-
-module.exports = {
-  getAllProjects,
-  getProjectDetails,
-  getCategoriesByProjectId
 };

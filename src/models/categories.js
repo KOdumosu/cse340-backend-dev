@@ -1,72 +1,120 @@
-const db = require("./db")
+import db from './db.js';
 
-async function getAllCategories() {
-  const result = await db.query(
-    "SELECT * FROM categories ORDER BY category_name"
-  )
-  return result.rows
-}
+/**
+ * Get all categories
+ */
+const getAllCategories = async () => {
+    const result = await db.query(
+        "SELECT * FROM categories ORDER BY category_name"
+    );
+    return result.rows;
+};
 
-async function getCategoryById(id) {
-  const result = await db.query(
-    "SELECT * FROM categories WHERE category_id = $1",
-    [id]
-  )
+/**
+ * Get categories for a project
+ */
+const getCategoriesByProjectId = async (projectId) => {
+    const query = `
+        SELECT c.category_id, c.category_name
+        FROM categories c
+        JOIN project_categories pc
+        ON c.category_id = pc.category_id
+        WHERE pc.project_id = $1;
+    `;
 
-  return result.rows[0]
-}
+    const result = await db.query(query, [projectId]);
+    return result.rows;
+};
 
-async function createCategory(categoryName) {
-  const result = await db.query(
-    `INSERT INTO categories (category_name)
-     VALUES ($1)
-     RETURNING *`,
-    [categoryName]
-  )
+/**
+ * Assign categories to project (replace all)
+ */
+const updateCategoryAssignments = async (projectId, categoryIds) => {
 
-  return result.rows[0]
-}
+    await db.query(
+        `DELETE FROM project_categories WHERE project_id = $1`,
+        [projectId]
+    );
 
-async function updateCategory(id, categoryName) {
-  const result = await db.query(
-    `UPDATE categories
-     SET category_name = $1
-     WHERE category_id = $2
-     RETURNING *`,
-    [categoryName, id]
-  )
+    if (!categoryIds || categoryIds.length === 0) return;
 
-  return result.rows[0]
-}
+    for (const categoryId of categoryIds) {
+        await db.query(
+            `INSERT INTO project_categories (project_id, category_id)
+             VALUES ($1, $2)`,
+            [projectId, categoryId]
+        );
+    }
+};
 
-async function getProjectsByCategoryId(categoryId) {
-  const result = await db.query(
-    `
-    SELECT
-      p.project_id,
-      p.project_name,
-      p.description,
-      p.organization_id,
-      o.name AS organization_name
-    FROM projects p
-    JOIN project_categories pc
-      ON p.project_id = pc.project_id
-    JOIN organizations o
-      ON p.organization_id = o.organization_id
-    WHERE pc.category_id = $1
-    ORDER BY p.project_name
-    `,
-    [categoryId]
-  )
+/**
+ * Get category by ID
+ */
+const getCategoryById = async (id) => {
+    const result = await db.query(
+        "SELECT * FROM categories WHERE category_id = $1",
+        [id]
+    );
+    return result.rows[0];
+};
 
-  return result.rows
-}
+/**
+ * Create category
+ */
+const createCategory = async (categoryName) => {
+    const result = await db.query(
+        `INSERT INTO categories (category_name)
+         VALUES ($1)
+         RETURNING *`,
+        [categoryName]
+    );
+    return result.rows[0];
+};
 
+/**
+ * Update category
+ */
+const updateCategory = async (id, categoryName) => {
+    const result = await db.query(
+        `UPDATE categories
+         SET category_name = $1
+         WHERE category_id = $2
+         RETURNING *`,
+        [categoryName, id]
+    );
+    return result.rows[0];
+};
 
-module.exports = {
-  getAllCategories,
-  getCategoryById,
-  createCategory,
-  updateCategory,
-  getProjectsByCategoryId
-}
+/**
+ * Get projects under category
+ */
+const getProjectsByCategoryId = async (categoryId) => {
+    const result = await db.query(
+        `
+        SELECT
+            p.project_id,
+            p.project_name,
+            p.description,
+            p.organization_id,
+            o.name AS organization_name
+        FROM projects p
+        JOIN project_categories pc ON p.project_id = pc.project_id
+        JOIN organizations o ON p.organization_id = o.organization_id
+        WHERE pc.category_id = $1
+        ORDER BY p.project_name
+        `,
+        [categoryId]
+    );
+
+    return result.rows;
+};
+
+export {
+    getAllCategories,
+    getCategoriesByProjectId,
+    updateCategoryAssignments,
+    getCategoryById,
+    createCategory,
+    updateCategory,
+    getProjectsByCategoryId
+};

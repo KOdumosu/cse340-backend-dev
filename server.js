@@ -1,13 +1,19 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const express = require('express');
-const path = require('path');
-const session = require('express-session');
+import express from 'express';
+import path from 'path';
+import session from 'express-session';
+import { fileURLToPath } from 'url';
 
-const db = require('./src/models/db');
-const router = require('./src/routes');
+import db from './src/models/db.js';
+import router from './src/routes.js';
+import flash from './src/middleware/flash.js';
 
-const flash = require('./src/middleware/flash.js'); 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -45,9 +51,22 @@ app.use(session({
     cookie: { maxAge: 60 * 60 * 1000 } // 1 hour
 }));
 
-/**
- * FLASH MIDDLEWARE (MUST BE AFTER SESSION)
- */
+
+app.use((req, res, next) => {
+    res.locals.isLoggedIn = false;
+
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
+
+    res.locals.user = req.session.user || null;
+
+    res.locals.NODE_ENV = NODE_ENV;
+
+    next();
+});
+
+/*** FLASH MIDDLEWARE (MUST BE AFTER SESSION)*/
 app.use(flash);
 
 /**
