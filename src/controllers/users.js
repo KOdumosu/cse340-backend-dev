@@ -1,7 +1,8 @@
 import bcrypt from 'bcrypt';
 import {
     createUser,
-    authenticateUser
+    authenticateUser,
+    getAllUsers
 } from '../models/users.js';
 
 /* ---------------- REGISTER ---------------- */
@@ -59,6 +60,20 @@ const processLoginForm = async (req, res) => {
     }
 };
 
+/** ------USERS PAGE-------*/
+const showUsersPage = async (req, res, next) => {
+    try {
+        const users = await getAllUsers();
+
+        res.render('users', {
+            title: 'Users',
+            users
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
 /* ---------------- LOGOUT ---------------- */
 
 const processLogout = (req, res) => {
@@ -90,20 +105,26 @@ const requireLogin = (req, res, next) => {
     next();
 };
 
-/**
- * ROLE MIDDLEWARE (ADMIN PROTECTION)
- */
+/*** ROLE MIDDLEWARE (ADMIN PROTECTION)*/
 const requireRole = (role) => {
     return (req, res, next) => {
+
+        console.log('Required Role:', role);
+        console.log('User Session:', req.session.user);
+
         if (!req.session || !req.session.user) {
             req.flash('error', 'Login required');
             return res.redirect('/login');
         }
 
         if (req.session.user.role_name !== role) {
+            console.log('ROLE CHECK FAILED');
+
             req.flash('error', 'Access denied');
             return res.redirect('/');
         }
+
+        console.log('ROLE CHECK PASSED');
 
         next();
     };
@@ -116,6 +137,7 @@ export {
     processLoginForm,
     processLogout,
     showDashboard,
+    showUsersPage,
     requireLogin,
     requireRole
 };

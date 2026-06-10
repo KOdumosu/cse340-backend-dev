@@ -9,9 +9,11 @@
         Browse our partner organizations and learn about the important work they do in the community.
     </p>
 
+    <% if (user && user.role_name === 'admin') { %>
     <a href="/new-organization" class="btn-primary">
         Add New Organization
     </a>
+<% } %>
 </section>
 
 <section class="organization-card">
@@ -21,13 +23,15 @@
             <% organizations.forEach(org => { %>
                 <li class="organization-item">
                     <h3>
-                        <a href="/organization/<%= org.organization_id %>">
+                        <a href="/organizations/<%= org.organization_id %>">
                             <%= org.name %>
                         </a>
 
-                         <a href="/edit-organization/<%= org.organization_id %>">
-                             Edit
-                        </a>
+                        <% if (user && user.role_name === 'admin') { %>
+                    <a href="/edit-organization/<%= org.organization_id %>">
+                      Edit
+                     </a>
+<% } %>
                     </h3>
 
                     <p>

@@ -2,6 +2,7 @@ import express from 'express';
 
 import {
     showOrganizationsPage,
+    showOrganizationDetailsPage,
     showNewOrganizationForm,
     processNewOrganizationForm,
     showEditOrganizationForm,
@@ -26,13 +27,17 @@ import {
     processLoginForm,
     processLogout,
     showDashboard,
+    showUsersPage,
     requireLogin,
     requireRole
 } from './controllers/users.js';
 
 import {
     showProjectsPage,
-    showNewProjectForm
+    showProjectDetailsPage,
+    showNewProjectForm,
+    showEditProjectForm,
+    processEditProjectForm
 } from './controllers/projects.js';
 
 const router = express.Router();
@@ -68,6 +73,9 @@ router.get(
     showOrganizationsPage
 );
 
+router.get('/organizations/:id', showOrganizationDetailsPage);
+router.get('/organization/:id', showOrganizationDetailsPage);
+
 router.get(
     '/new-organization',
     requireRole('admin'),
@@ -92,6 +100,11 @@ router.post(
     processEditOrganizationForm
 );
 
+router.get(
+    '/users',
+    requireRole('admin'),
+    showUsersPage
+);
 /* ================= PROJECTS ================= */
 
 router.get(
@@ -99,12 +112,22 @@ router.get(
     showProjectsPage
 );
 
+router.get('/projects/:id', showProjectDetailsPage);
+router.get('/project/:id', showProjectDetailsPage);
+
+router.get('/new-project', requireRole('admin'), showNewProjectForm);
+
 router.get(
-    '/new-project',
+    '/edit-project/:id',
     requireRole('admin'),
-    showNewProjectForm
+    showEditProjectForm
 );
 
+router.post(
+    '/edit-project/:id',
+    requireRole('admin'),
+    processEditProjectForm
+);
 /* ================= CATEGORIES ================= */
 
 router.get(

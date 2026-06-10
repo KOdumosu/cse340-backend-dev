@@ -46,9 +46,7 @@ const authenticateUser = async (email, password) => {
     return user;
 };
 
-/**
- * Create user
- */
+/*** Create user*/
 const createUser = async (name, email, passwordHash) => {
     const result = await db.query(
         `
@@ -62,8 +60,28 @@ const createUser = async (name, email, passwordHash) => {
     return result.rows[0];
 };
 
+/*** Get all users*/
+const getAllUsers = async () => {
+    const query = `
+        SELECT
+            u.user_id,
+            u.name,
+            u.email,
+            COALESCE(r.role_name, 'user') AS role_name
+        FROM users u
+        LEFT JOIN roles r
+            ON u.role_id = r.role_id
+        ORDER BY u.user_id
+    `;
+
+    const result = await db.query(query);
+
+    return result.rows;
+};
+
 export {
     findUserByEmail,
     authenticateUser,
-    createUser
+    createUser,
+    getAllUsers
 };

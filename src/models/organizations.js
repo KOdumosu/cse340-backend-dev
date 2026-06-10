@@ -51,8 +51,23 @@ const createOrganization = async (
   return result.rows[0].organization_id;
 };
 
+const getProjectsByOrganizationId = async (organizationId) => {
+  const result = await db.query(
+    `
+    SELECT *
+    FROM projects
+    WHERE organization_id = $1
+    ORDER BY project_name;
+    `,
+    [organizationId]
+  );
+
+  return result.rows;
+};
+
 export {
   getAllOrganizations,
   getOrganizationById,
   createOrganization,
+  getProjectsByOrganizationId
 };

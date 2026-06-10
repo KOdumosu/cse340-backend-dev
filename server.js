@@ -61,10 +61,9 @@ app.use((req, res, next) => {
 
     res.locals.user = req.session.user || null;
 
-    res.locals.NODE_ENV = NODE_ENV;
-
     next();
-});
+}
+);
 
 /*** FLASH MIDDLEWARE (MUST BE AFTER SESSION)*/
 app.use(flash);
