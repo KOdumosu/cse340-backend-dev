@@ -2,37 +2,62 @@
 
 <main>
 
-    <h1><%= project.project_name %></h1>
+<h1><%= project.project_name %></h1>
 
-    <p><%= project.description %></p>
+<p>
+    <strong>Organization:</strong>
+    <%= project.organization_name %>
+</p>
 
+<p>
+    <%= project.description %>
+</p>
+
+<h3>Categories</h3>
+
+<ul>
+    <% categories.forEach(category => { %>
+        <li><%= category.category_name %></li>
+    <% }) %>
+</ul>
+
+<% if (user && user.role_name === 'admin') { %>
     <p>
-        Organization:
-
-        <a href="/organization/<%= project.organization_id %>">
-            <%= project.organization_name %>
-        </a>
-    </p>
-
-    <p>
-        <a href="/edit-project/<%= project.project_id %>" class="btn">
+        <a href="/edit-project/<%= project.project_id %>">
             Edit Project
         </a>
     </p>
+<% } %>
 
-    <h2>Categories</h2>
+<% if (user) { %>
 
-    <div class="tags">
+    <% if (!volunteerStatus) { %>
 
-        <% categories.forEach(category => { %>
+        <form
+            action="/projects/<%= project.project_id %>/volunteer"
+            method="POST">
 
-            <a href="/category/<%= category.category_id %>">
-                <%= category.category_name %>
-            </a>
+            <button type="submit">Volunteer for this Project</button>
 
-        <% }) %>
+        </form>
 
-    </div>
+    <% } else { %>
+
+        <p>
+            You are volunteering for this project?.
+        </p>
+
+        <form
+            action="/projects/<%= project.project_id %>/unvolunteer"
+            method="POST">
+
+            <button type="submit">Remove Volunteer Status</button>
+
+        </form>
+
+    <% } %>
+
+<% } %>
 
 </main>
 

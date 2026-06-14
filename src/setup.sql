@@ -78,6 +78,27 @@ CREATE TABLE users (
 );
 
 
+CREATE TABLE volunteer_projects (
+    volunteer_id SERIAL PRIMARY KEY,
+
+    user_id INTEGER NOT NULL,
+    project_id INTEGER NOT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_volunteer_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_volunteer_project
+        FOREIGN KEY (project_id)
+        REFERENCES projects(project_id)
+        ON DELETE CASCADE,
+
+    UNIQUE(user_id, project_id)
+);
+
 ----------------------------------------------------
 -- ORGANIZATIONS
 ----------------------------------------------------

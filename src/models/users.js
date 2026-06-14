@@ -1,9 +1,7 @@
 import db from './db.js';
 import bcrypt from 'bcrypt';
 
-/**
- * Find user by email (includes role_name)
- */
+/*** Find user by email (includes role_name)*/
 const findUserByEmail = async (email) => {
     const query = `
         SELECT 
@@ -22,16 +20,12 @@ const findUserByEmail = async (email) => {
     return result.rows[0] || null;
 };
 
-/**
- * Verify password
- */
+/*** Verify password*/
 const verifyPassword = async (password, passwordHash) => {
     return bcrypt.compare(password, passwordHash);
 };
 
-/**
- * Authenticate user
- */
+/*** Authenticate user */
 const authenticateUser = async (email, password) => {
     const user = await findUserByEmail(email);
 

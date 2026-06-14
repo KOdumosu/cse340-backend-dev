@@ -68,9 +68,7 @@ app.use((req, res, next) => {
 /*** FLASH MIDDLEWARE (MUST BE AFTER SESSION)*/
 app.use(flash);
 
-/**
- * DEV LOGGER
- */
+/*** DEV LOGGER*/
 app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'development') {
         console.log(`${req.method} ${req.url}`);
@@ -78,22 +76,16 @@ app.use((req, res, next) => {
     next();
 });
 
-/**
- * GLOBAL VARIABLES
- */
+/*** GLOBAL VARIABLES*/
 app.use((req, res, next) => {
     res.locals.NODE_ENV = process.env.NODE_ENV;
     next();
 });
 
-/**
- * ROUTES
- */
+/*** ROUTES*/
 app.use(router);
 
-/**
- * 404 HANDLER
- */
+/*** 404 HANDLER*/
 app.use((req, res) => {
     res.status(404).render('errors/404', {
         title: 'Page Not Found',
@@ -101,9 +93,7 @@ app.use((req, res) => {
     });
 });
 
-/**
- * ERROR HANDLER
- */
+/*** ERROR HANDLER*/
 app.use((err, req, res, next) => {
     console.error(err.message);
     console.error(err.stack);
@@ -117,9 +107,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-/**
- * START SERVER
- */
+/*** START SERVER*/
 app.listen(PORT, async () => {
     console.log(`Server running on http://127.0.0.1:${PORT}`);
 

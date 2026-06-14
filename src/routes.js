@@ -32,6 +32,7 @@ import {
     requireRole
 } from './controllers/users.js';
 
+
 import {
     showProjectsPage,
     showProjectDetailsPage,
@@ -39,6 +40,13 @@ import {
     showEditProjectForm,
     processEditProjectForm
 } from './controllers/projects.js';
+
+import {
+    volunteerForProject,
+    removeVolunteerSignup
+}
+from './controllers/volunteers.js';
+
 
 const router = express.Router();
 
@@ -174,6 +182,20 @@ router.post(
     '/assign-categories/:projectId',
     requireRole('admin'),
     processAssignCategoriesForm
+);
+
+/* ================= VOLUNTEERS ================= */
+
+router.post(
+    '/projects/:projectId/volunteer',
+    requireLogin,
+    volunteerForProject
+);
+
+router.post(
+    '/projects/:projectId/unvolunteer',
+    requireLogin,
+    removeVolunteerSignup
 );
 
 export default router;

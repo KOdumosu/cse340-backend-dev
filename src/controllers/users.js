@@ -5,6 +5,11 @@ import {
     getAllUsers
 } from '../models/users.js';
 
+import {
+    getUserVolunteerProjects
+}
+from '../models/volunteers.js';
+
 /* ---------------- REGISTER ---------------- */
 
 const showUserRegistrationForm = (req, res) => {
@@ -47,7 +52,7 @@ const processLoginForm = async (req, res) => {
         }
 
         req.session.user = user;
-
+        console.log(req.session.user);
         req.flash('success', 'Login successful!');
         console.log('User logged in:', user);
 
@@ -74,6 +79,7 @@ const showUsersPage = async (req, res, next) => {
         next(error);
     }
 };
+
 /* ---------------- LOGOUT ---------------- */
 
 const processLogout = (req, res) => {
@@ -85,16 +91,22 @@ const processLogout = (req, res) => {
 
 /* ---------------- DASHBOARD ---------------- */
 
-const showDashboard = (req, res) => {
+const showDashboard = async (req, res) => {
+
     const user = req.session.user;
+
+    const volunteerProjects =
+        await getUserVolunteerProjects(
+            user.user_id
+        );
 
     res.render('dashboard', {
         title: 'Dashboard',
         name: user.name,
-        email: user.email
+        email: user.email,
+        volunteerProjects
     });
 };
-
 /* ---------------- PROTECTED MIDDLEWARE ---------------- */
 
 const requireLogin = (req, res, next) => {
@@ -118,12 +130,10 @@ const requireRole = (role) => {
         }
 
         if (req.session.user.role_name !== role) {
-            console.log('ROLE CHECK FAILED');
-
-            req.flash('error', 'Access denied');
-            return res.redirect('/');
-        }
-
+    return res.status(403).render('errors/403', {
+        title: 'Access Denied'
+        });
+     }
         console.log('ROLE CHECK PASSED');
 
         next();

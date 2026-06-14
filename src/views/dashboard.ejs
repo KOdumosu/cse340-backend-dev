@@ -6,7 +6,7 @@
 
     <div class="dashboard-card">
 
-        <h2>You Are Welcome!</h2>
+        <h2>Welcome!</h2>
 
         <p>
             <strong>Name:</strong>
@@ -21,6 +21,53 @@
         <p>
             You are now successfully logged in.
         </p>
+
+    </div>
+
+    <!-- Volunteer Projects Section -->
+    <div class="dashboard-card">
+
+        <h2>My Volunteer Projects</h2>
+
+        <% if (volunteerProjects && volunteerProjects.length > 0) { %>
+
+            <ul>
+
+                <% volunteerProjects.forEach(project => { %>
+
+                    <li style="margin-bottom: 10px;">
+
+                        <strong>
+                            <%= project.project_name %>
+                        </strong>
+
+                        -
+                        <%= project.organization_name %>
+
+                        <form
+                            action="/projects/<%= project.project_id %>/unvolunteer"
+                            method="POST"
+                            style="display:inline; margin-left:10px;">
+
+                            <button type="submit">
+                                Remove
+                            </button>
+
+                        </form>
+
+                    </li>
+
+                <% }) %>
+
+            </ul>
+
+        <% } else { %>
+
+            <p>
+                You have not volunteered for any projects yet.
+            </p>
+
+        <% } %>
 
     </div>
 

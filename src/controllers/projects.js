@@ -7,9 +7,12 @@ import {
 import {
     getAllOrganizations
 } from '../models/organizations.js';
-/* =========================
-   PROJECT LIST PAGE
-========================= */
+
+import {
+    isVolunteer
+} from '../models/volunteers.js';
+
+/* =========================PROJECT LIST PAGE========================= */
 export const showProjectsPage = async (req, res, next) => {
     try {
         const projects = await getAllProjects();
@@ -24,28 +27,43 @@ export const showProjectsPage = async (req, res, next) => {
     }
 };
 
-/* =========================
-   PROJECT DETAILS PAGE
-========================= */
+/* =========================PROJECT DETAILS PAGE========================= */
 export const showProjectDetailsPage = async (req, res, next) => {
     try {
+
         const projectId = req.params.id;
 
-        const project = await getProjectDetails(projectId);
+        const project =
+            await getProjectDetails(projectId);
 
         if (!project) {
-            return res.status(404).render('errors/404', {
-                title: 'Project Not Found'
-            });
+            return res.status(404).render(
+                'errors/404',
+                {
+                    title: 'Project Not Found'
+                }
+            );
         }
 
         const categories =
             await getCategoriesByProjectId(projectId);
 
+        let volunteerStatus = false;
+
+        if (req.session.user) {
+
+            volunteerStatus =
+                await isVolunteer(
+                    req.session.user.user_id,
+                    projectId
+                );
+        }
+
         res.render('project', {
             title: project.project_name,
             project,
-            categories
+            categories,
+            volunteerStatus
         });
 
     } catch (error) {

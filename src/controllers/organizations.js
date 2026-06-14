@@ -22,16 +22,23 @@ const showOrganizationDetailsPage = async (req, res, next) => {
     const organizationId = req.params.id;
 
     const organization =
-      await organizationModel.getOrganizationById(organizationId);
+  await organizationModel.getOrganizationById(organizationId);
 
-    const projects =
-      await organizationModel.getProjectsByOrganizationId(organizationId);
+if (!organization) {
+  return res.status(404).render('errors/404', {
+    title: 'Organization Not Found'
+  });
+}
 
-    res.render("organization", {
-      title: organization.name,
-      organization,
-      projects,
-    });
+const projects =
+  await organizationModel.getProjectsByOrganizationId(organizationId);
+
+res.render("organization", {
+  title: organization.name,
+  organization,
+  projects,
+});
+
   } catch (error) {
     next(error);
   }
